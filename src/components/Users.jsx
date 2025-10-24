@@ -40,7 +40,10 @@ function Users()  {
                     <th>firstName</th>
                     <th>lastName</th>
                     <th>Email</th>
-                    <th colSpan={2}>Action</th>
+                        {keycloak.hasRealmRole("ADMIN") &&
+                        <th>colSpan={2}>Action</th>
+                        }
+
                 </tr>
                 </thead>
                 <tbody>
@@ -51,7 +54,9 @@ function Users()  {
                         <td>{user.lastName}</td>
                         <td>{user.email}</td>
                         <td>
-                            <Link to={`/details/${user.id}`} >Details</Link>
+                            {keycloak.hasRealmRole("ADMIN") &&
+                                <Link to={`/details/${user.id}`} >Details</Link>
+                            }
                         </td>
                     </tr>
                 ))}

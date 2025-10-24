@@ -20,12 +20,16 @@ function App() {
                 <Route
                     path="/update/:id"
                     element={
-                        <RequireAuth requiredRoles={["USER"]}>
+                        <RequireAuth requiredRoles={["ADMIN"]}>
                             <Update />
                         </RequireAuth>
                     }
                 />
-                <Route path="/details/:id" element={<Details />} />
+                <Route path="/details/:id" element={
+                    <RequireAuth requiredRoles={["ADMIN"]}>
+                        <Details />
+                    </RequireAuth>
+                } />
                 <Route path="/no-access" element={<NoAccess />} />
             </Routes>
         </div>
