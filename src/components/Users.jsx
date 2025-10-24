@@ -2,16 +2,23 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import keycloak from "./keycloak.js";
+import {useKeycloak} from "@react-keycloak/web";
 
 
 function Users()  {
 
     const [users,setUsers]=useState([]);
+    const {keycloak,initialized}=useKeycloak();
+
     const fetchUsers=async ()=>{
+        if (!initialized || !keycloak.authenticated) {
+            return;
+        }
         const resp=await axios.get("http://localhost:8085/api/v1/users");
         const data=(await resp).data;
         setUsers(data);
     }
+    const isAdmin = keycloak.hasRealmRole("ADMIN");
 
     const details=(id)=>{
         console.log(id)
@@ -24,8 +31,11 @@ function Users()  {
         keycloak.logout();
    }
     useEffect(() => {
-        fetchUsers()
-    }, []);
+
+        if (initialized && keycloak.authenticated) {
+            fetchUsers();
+        }
+    }, [initialized, keycloak.authenticated]);
 
     return(
         <div>
@@ -41,7 +51,7 @@ function Users()  {
                     <th>lastName</th>
                     <th>Email</th>
                         {keycloak.hasRealmRole("ADMIN") &&
-                        <th>colSpan={2}>Action</th>
+                        <th colSpan={2}>Action</th>
                         }
 
                 </tr>
